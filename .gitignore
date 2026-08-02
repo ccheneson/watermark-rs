@@ -1,0 +1,8 @@
+/target
+*.pdf
+/*.png
+/*.jpg
+*.dylib
+Cargo.lock
+.DS_Store
+libpdfium.dynlib
