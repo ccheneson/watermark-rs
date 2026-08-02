@@ -10,7 +10,14 @@ pub fn convert_pdf2pngs(
     image_resolution: &ImageSizeChoice,
 ) -> anyhow::Result<Vec<PathBuf>> {
     let pdfium = Pdfium::new(Pdfium::bind_to_library("./libpdfium.dylib")?);
-    let document = pdfium.load_pdf_from_file(&file_path, None)?;
+    let document = pdfium
+        .load_pdf_from_file(&file_path, None)
+        .map_err(|e| match e {
+            PdfiumError::PdfiumLibraryInternalError(PdfiumInternalError::FormatError) => {
+                anyhow!("File {:?} is not a pdf file", file_path)
+            }
+            err => anyhow!(err),
+        })?;
 
     let pdf_stem = file_path
         .file_stem()

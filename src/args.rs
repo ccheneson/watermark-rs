@@ -1,3 +1,4 @@
+use ab_glyph::PxScale;
 use anyhow::anyhow;
 use clap::{Parser, ValueEnum};
 use std::path::PathBuf;
@@ -34,6 +35,13 @@ impl ImageSizeChoice {
             Self::High => ImageSize::DPI_300,
         }
     }
+
+    pub const fn font_scale(self) -> PxScale {
+        match self {
+            Self::Normal => PxScale { x: 40.0, y: 50.0 },
+            Self::High => PxScale { x: 60.0, y: 100.0 },
+        }
+    }
 }
 
 fn non_empty(s: &str) -> anyhow::Result<String> {
@@ -57,6 +65,12 @@ pub struct WatermarkCli {
         help = "optional secondary watermark to add - if omitted, primary watermark is used"
     )]
     pub text2: Option<String>,
+
+    #[arg(
+        long,
+        help = "optional third watermark to add - if omitted, primary watermark is used"
+    )]
+    pub text3: Option<String>,
 
     #[arg(long, short, default_value_t = ImageSizeChoice::Normal, help="for smaller size, choose 'normal' (Default) - for good resolution, choose 'high'")]
     pub resolution: ImageSizeChoice,

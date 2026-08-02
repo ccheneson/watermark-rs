@@ -20,6 +20,8 @@ fn main() -> anyhow::Result<()> {
 
     match result_tmp_dir {
         Ok(page_tmp_path) => {
+            let _clean_up_drop = CleanUpTmpWks(&page_tmp_path);
+
             debug!("Temporary workspace: {:?}", page_tmp_path);
             let final_out = file_with_suffix(&watermark.file, "watermarked")?;
             info!("1)Converting pdf to pngs ... ");
@@ -32,9 +34,6 @@ fn main() -> anyhow::Result<()> {
             let _ = merge_images2pdf(&final_out, &images_watermarked)?;
             info!("> OK");
             info!("Result = {:?}", &final_out);
-            info!("Cleaning up ...");
-            let _ = clean_up(&page_tmp_path);
-            info!("> OK");
             Ok(())
         }
         Err(err) => Err(err.into()),
@@ -53,4 +52,18 @@ pub fn add_watermark_to_pages(
 pub fn clean_up(page_tmp_path: &PathBuf) -> anyhow::Result<()> {
     remove_all_files(&page_tmp_path)?;
     fs::remove_dir(&page_tmp_path).map_err(|err| err.into())
+}
+
+struct CleanUpTmpWks<'a>(&'a PathBuf);
+impl<'a> Drop for CleanUpTmpWks<'a> {
+    fn drop(&mut self) {
+        info!("[Drop] Cleaning up...");
+        clean_up(self.0).expect(
+            format!(
+                "Cleaning up tmp wks {:?} should be performed successfully",
+                self.0
+            )
+            .as_str(),
+        );
+    }
 }

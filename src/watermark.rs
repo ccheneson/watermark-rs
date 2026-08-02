@@ -1,6 +1,6 @@
 use crate::args::WatermarkCli;
 use crate::file_with_suffix;
-use ab_glyph::{FontRef, PxScale};
+use ab_glyph::FontRef;
 use anyhow::Result;
 use core::convert::AsRef;
 use image::{Rgba, RgbaImage, open};
@@ -26,25 +26,37 @@ pub fn add_watermark(watermark: &WatermarkCli, filename: impl AsRef<Path>) -> Re
     } else {
         text
     };
+    let text3 = if let Some(t) = &watermark.text3 {
+        &t
+    } else {
+        text
+    };
 
-    let text_x_3 = [text.as_str(); 3].join(" - ");
-    let text2_x_3 = [text2.as_str(); 3].join(" - ");
+    let text_x_3 = [text.as_str(); 6].join("   ".repeat(4).as_str());
+    let text2_x_3 = [text2.as_str(); 6].join("   ".repeat(4).as_str());
+    let text3_x_3 = [text3.as_str(); 6].join("   ".repeat(4).as_str());
 
-    let scale = PxScale { x: 80.0, y: 222.0 };
+    let scale = &watermark.resolution.font_scale();
 
-    let range = 1..5; // 4 lines of text
-    let y_text_base = h / 5 as u32;
+    let range = 1..9; // 4 lines of text
+    let y_text_base = h / 9 as u32;
 
     debug!("Transparency set to {}", watermark.transparency);
 
     range.for_each(|i| {
-        let text = if i % 2 == 0 { &text2_x_3 } else { &text_x_3 };
+        let text = if i % 2 == 0 {
+            &text2_x_3
+        } else if i % 3 == 0 {
+            &text3_x_3
+        } else {
+            &text_x_3
+        };
         draw_text_mut(
             &mut watermark_image,
             Rgba([255, 0, 0, watermark.transparency]), // red, transparent
             0 as i32,
             (y_text_base * i) as i32,
-            scale,
+            *scale,
             &font,
             &text,
         );
