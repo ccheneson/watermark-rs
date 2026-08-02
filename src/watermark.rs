@@ -1,6 +1,6 @@
 use crate::args::WatermarkCli;
 use crate::file_with_suffix;
-use ab_glyph::{FontRef, PxScale};
+use ab_glyph::FontRef;
 use anyhow::Result;
 use core::convert::AsRef;
 use image::{Rgba, RgbaImage, open};

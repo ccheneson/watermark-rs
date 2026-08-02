@@ -1,7 +1,7 @@
 use crate::args::ImageSizeChoice;
 use anyhow::anyhow;
 use pdfium_render::prelude::*;
-use std::{io::Error, path::PathBuf};
+use std::path::PathBuf;
 use tracing::debug;
 
 pub fn convert_pdf2pngs(

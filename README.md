@@ -28,7 +28,7 @@ Options:
 # With 1 text
 
 ```bash
-cargo r -- sample.pdf --text1 "Hello World" -t 100
+cargo r -- sample.pdf --text1 "Location Appartement"  -t 80 --resolution normal
 ```
  ![with 1 text](./docs/text1.png)
 
@@ -36,6 +36,12 @@ cargo r -- sample.pdf --text1 "Hello World" -t 100
 
 # With 2 texts
 ```bash
-cargo r -- sample.pdf --text1 "Hello World" --text2 "Foo Bar" -t 100
+cargo r -- sample.pdf --text1 "Location Appartement" --text2 "John Doe"  -t 80 --resolution normal
 ```
  ![with 2 texts](./docs/text1text2.png)
+
+# With 3 texts
+```bash
+cargo r -- sample.pdf --text1 "Location Appartement" --text2 "John Doe" --text3 "Agence ToutRisque"  -t 80 --resolution normal
+```
+ ![with 3 texts](./docs/text1text2text3.png)
