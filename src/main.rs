@@ -12,32 +12,27 @@ use watermark_rs::{create_tmp_workspace, file_with_suffix, remove_all_files};
 fn main() -> anyhow::Result<()> {
     tracing_subscriber::fmt::init();
 
-    let result_tmp_dir = create_tmp_workspace();
+    let page_tmp_path = create_tmp_workspace()?;
 
     let watermark = WatermarkCli::parse();
 
     info!("Using resolution: {:?}", watermark.resolution);
 
-    match result_tmp_dir {
-        Ok(page_tmp_path) => {
-            let _clean_up_drop = CleanUpTmpWks(&page_tmp_path);
+    let _clean_up_drop = CleanUpTmpWks(&page_tmp_path);
 
-            debug!("Temporary workspace: {:?}", page_tmp_path);
-            let final_out = file_with_suffix(&watermark.file, "watermarked")?;
-            info!("1)Converting pdf to pngs ... ");
-            let pngs = convert_pdf2pngs(&watermark.file, &page_tmp_path, &watermark.resolution)?;
-            info!("> OK");
-            info!("2)Adding watermarks to pngs ... ");
-            let images_watermarked = add_watermark_to_pages(&watermark, &pngs)?;
-            info!("> OK");
-            info!("3)Merging watermarked pngs to pdf ... ");
-            let _ = merge_images2pdf(&final_out, &images_watermarked)?;
-            info!("> OK");
-            info!("Result = {:?}", &final_out);
-            Ok(())
-        }
-        Err(err) => Err(err.into()),
-    }
+    debug!("Temporary workspace: {:?}", page_tmp_path);
+    let final_out = file_with_suffix(&watermark.file, "watermarked")?;
+    info!("1)Converting pdf to pngs ... ");
+    let pngs = convert_pdf2pngs(&watermark.file, &page_tmp_path, &watermark.resolution)?;
+    info!("> OK");
+    info!("2)Adding watermarks to pngs ... ");
+    let images_watermarked = add_watermark_to_pages(&watermark, &pngs)?;
+    info!("> OK");
+    info!("3)Merging watermarked pngs to pdf ... ");
+    let _ = merge_images2pdf(&final_out, &images_watermarked)?;
+    info!("> OK");
+    info!("Result = {:?}", &final_out);
+    Ok(())
 }
 
 pub fn add_watermark_to_pages(

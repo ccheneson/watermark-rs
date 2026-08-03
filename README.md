@@ -17,10 +17,10 @@ Arguments:
 Options:
       --text1 <TEXT1>                primary watermark to add
       --text2 <TEXT2>                optional secondary watermark to add - if omitted, primary watermark is used
+      --text3 <TEXT3>                optional third watermark to add - if omitted, primary watermark is used
   -r, --resolution <RESOLUTION>      for smaller size, choose 'normal' (Default) - for good resolution, choose 'high' [default: normal] [possible values: normal, high]
   -t, --transparency <TRANSPARENCY>  [default: 30]
   -h, --help                         Print help
-
 ```
 
 ## Examples
