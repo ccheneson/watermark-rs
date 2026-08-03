@@ -4,7 +4,7 @@ A rust cli to add watermarks to pdf document
 
 ## Prerequisites
 
-Install [libpdfium](https://github.com/bblanchon/pdfium-binaries) at the same level as the generated binary
+Install [libpdfium](https://github.com/bblanchon/pdfium-binaries) at the same level as the generated binary or at the root of this project.
 
 ## CLI Description
 
