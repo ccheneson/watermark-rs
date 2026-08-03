@@ -7,7 +7,13 @@ use image::{Rgba, RgbaImage, open};
 use imageproc::drawing::draw_text_mut;
 use imageproc::geometric_transformations::{Interpolation, rotate_about_center};
 use std::path::{Path, PathBuf};
+use std::sync::LazyLock;
 use tracing::debug;
+
+static FONT_BYTES: &[u8] = include_bytes!("../DejaVuSans.ttf");
+
+static FONT: LazyLock<FontRef<'static>> =
+    LazyLock::new(|| FontRef::try_from_slice(FONT_BYTES).expect("invalid embedded font"));
 
 pub fn add_watermark(watermark: &WatermarkCli, filename: impl AsRef<Path>) -> Result<PathBuf> {
     let mut img = open(&filename)?.to_rgba8();
@@ -15,8 +21,6 @@ pub fn add_watermark(watermark: &WatermarkCli, filename: impl AsRef<Path>) -> Re
     let (w, h) = img.dimensions();
 
     debug!("Image dimension = {w}/{h}");
-
-    let font = FontRef::try_from_slice(include_bytes!("../DejaVuSans.ttf"))?;
 
     let mut watermark_image = RgbaImage::from_pixel(w + 500, h, Rgba([0, 0, 0, 0]));
 
@@ -57,7 +61,7 @@ pub fn add_watermark(watermark: &WatermarkCli, filename: impl AsRef<Path>) -> Re
             0 as i32,
             (y_text_base * i) as i32,
             *scale,
-            &font,
+            &*FONT,
             &text,
         );
     });
