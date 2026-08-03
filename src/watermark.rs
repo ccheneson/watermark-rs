@@ -12,6 +12,7 @@ use tracing::debug;
 
 static FONT_BYTES: &[u8] = include_bytes!("../DejaVuSans.ttf");
 
+//LazyLock: A value which is initialized on the first access.
 static FONT: LazyLock<FontRef<'static>> =
     LazyLock::new(|| FontRef::try_from_slice(FONT_BYTES).expect("invalid embedded font"));
 
